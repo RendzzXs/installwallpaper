@@ -1,0 +1,170 @@
+#!/bin/bash
+
+# -------------------------------
+# RENDZZ OFFICIAL - WALLPAPER MANAGER
+# -------------------------------
+PTERO_DIR="/var/www/pterodactyl"
+TARGET_FILE="$PTERO_DIR/resources/views/templates/base/core.blade.php"
+BACKUP_FILE="$PTERO_DIR/core.backup"
+WALLPAPER_DIR="$PTERO_DIR/public/rendzz"
+WALLPAPER_FILE="$WALLPAPER_DIR/bg.jpg"
+
+# Function: Hapus wallpaper (kembalikan normal)
+uninstall_wallpaper() {
+    echo ""
+    echo "🗑️  Menghapus wallpaper & mengembalikan panel normal..."
+    
+    # Hapus folder wallpaper
+    if [ -d "$WALLPAPER_DIR" ]; then
+        rm -rf "$WALLPAPER_DIR"
+        echo "✅ Folder wallpaper dihapus"
+    fi
+    
+    # Kembalikan core.blade.php ke default (kosong/inject ulang tanpa CSS)
+    cat > "$TARGET_FILE" << 'EOF'
+@extends('templates/wrapper', [
+    'css' => ['body' => 'bg-neutral-800'],
+])
+
+@section('container')
+    <div id="modal-portal"></div>
+    <div id="app"></div>
+@endsection
+EOF
+    
+    # Clear cache
+    cd "$PTERO_DIR"
+    php artisan view:clear
+    php artisan cache:clear
+    
+    echo "✅ Panel kembali normal (tanpa wallpaper)"
+    echo ""
+}
+
+# Function: Install wallpaper baru
+install_wallpaper() {
+    echo ""
+    echo "🖼️  Install wallpaper baru..."
+    
+    # Input URL dari user
+    echo "📸 Masukkan URL wallpaper (direct link gambar):"
+    echo -n "➤ "
+    read WALLPAPER_URL
+    
+    # Validasi URL
+    if [ -z "$WALLPAPER_URL" ]; then
+        echo "❌ URL tidak boleh kosong!"
+        return 1
+    fi
+    
+    if [[ ! "$WALLPAPER_URL" =~ ^https?:// ]]; then
+        echo "❌ URL harus diawali http:// atau https://"
+        return 1
+    fi
+    
+    echo "✅ URL diterima: $WALLPAPER_URL"
+    
+    # Backup dulu
+    cp "$TARGET_FILE" "$BACKUP_FILE" 2>/dev/null
+    
+    # Download wallpaper
+    echo "📥 Downloading wallpaper..."
+    mkdir -p "$WALLPAPER_DIR"
+    curl -L "$WALLPAPER_URL" -o "$WALLPAPER_FILE"
+    
+    if [ ! -f "$WALLPAPER_FILE" ]; then
+        echo "❌ Gagal download wallpaper!"
+        return 1
+    fi
+    
+    chmod 644 "$WALLPAPER_FILE"
+    chown -R www-data:www-data "$WALLPAPER_DIR" 2>/dev/null || \
+    chown -R nginx:nginx "$WALLPAPER_DIR" 2>/dev/null || \
+    chown -R apache:apache "$WALLPAPER_DIR" 2>/dev/null
+    
+    echo "✅ Wallpaper tersimpan"
+    
+    # Inject CSS wallpaper (MURNI BACKGROUND, TIDAK ADA GREETING/ACCESS CONTROL)
+    cat > "$TARGET_FILE" << 'EOF'
+@extends('templates/wrapper', [
+    'css' => ['body' => 'bg-neutral-800'],
+])
+
+@section('container')
+    <div id="modal-portal"></div>
+    <div id="app"></div>
+
+    <style>
+        /* RENDZZ OFFICIAL - WALLPAPER ONLY */
+        body {
+            background: url('/rendzz/bg.jpg') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+        
+        /* Biar konten tetap kebaca */
+        .content-wrapper, .main-sidebar, .card {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(5px);
+        }
+        
+        .dark-mode .content-wrapper, 
+        .dark-mode .main-sidebar, 
+        .dark-mode .card {
+            background-color: rgba(31, 41, 55, 0.9) !important;
+            backdrop-filter: blur(5px);
+        }
+    </style>
+@endsection
+EOF
+    
+    # Clear cache
+    cd "$PTERO_DIR"
+    php artisan view:clear
+    php artisan cache:clear
+    
+    echo "✅ Wallpaper berhasil diinstall!"
+    echo "🖼️  URL: $WALLPAPER_URL"
+    echo ""
+}
+
+# -------------------------------
+# MAIN MENU
+# -------------------------------
+while true; do
+    clear
+    echo "╔════════════════════════════════════════════╗"
+    echo "║     🔥 RENDZZ WALLPAPER MANAGER 🔥       ║"
+    echo "╠════════════════════════════════════════════╣"
+    echo "║                                            ║"
+    echo "║  [1] 🗑️  HAPUS wallpaper                  ║"
+    echo "║  [2] 🖼️  INSTALL wallpaper baru           ║"
+    echo "║  [x] ❌ KELUAR                           ║"
+    echo "║                                            ║"
+    echo "╚════════════════════════════════════════════╝"
+    echo ""
+    echo -n "Pilih menu [1/2/x]: "
+    read MENU
+    
+    case $MENU in
+        1)
+            uninstall_wallpaper
+            echo ""
+            echo -n "Tekan Enter untuk kembali ke menu..."
+            read
+            ;;
+        2)
+            install_wallpaper
+            echo ""
+            echo -n "Tekan Enter untuk kembali ke menu..."
+            read
+            ;;
+        x)
+            echo "Terima kasih! - Rendzz Official"
+            exit 0
+            ;;
+        *)
+            echo "Pilihan tidak valid!"
+            sleep 1
+            ;;
+    esac
+done
