@@ -1,26 +1,53 @@
 #!/bin/bash
 
 # -------------------------------
-# RENDZZ OFFICIAL - WALLPAPER MANAGER
+# RENDZZ OFFICIAL - GLASS EDITION V3
 # -------------------------------
 PTERO_DIR="/var/www/pterodactyl"
 TARGET_FILE="$PTERO_DIR/resources/views/templates/base/core.blade.php"
+FOOTER_FILE="$PTERO_DIR/resources/views/templates/base/footer.blade.php"
 BACKUP_FILE="$PTERO_DIR/core.backup"
 WALLPAPER_DIR="$PTERO_DIR/public/rendzz"
 WALLPAPER_FILE="$WALLPAPER_DIR/bg.jpg"
 
-# Function: Hapus wallpaper (kembalikan normal)
-uninstall_wallpaper() {
+# Warna
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+NC='\033[0m'
+
+# -------------------------------
+# FUNCTION: HEADER
+# -------------------------------
+show_header() {
+    clear
+    echo -e "${CYAN}╔════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                                                        ║${NC}"
+    echo -e "${CYAN}║${WHITE}              🔥 RENDZZ GLASS EDITION V3 🔥          ${CYAN}║${NC}"
+    echo -e "${CYAN}║${WHITE}                  Premium Panel Effect              ${CYAN}║${NC}"
+    echo -e "${CYAN}║                                                        ║${NC}"
+    echo -e "${CYAN}╚════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo "🗑️  Menghapus wallpaper & mengembalikan panel normal..."
+}
+
+# -------------------------------
+# FUNCTION: HAPUS WALLPAPER
+# -------------------------------
+uninstall_wallpaper() {
+    show_header
+    echo -e "${YELLOW}🗑️  Menghapus wallpaper & efek glass...${NC}\n"
     
     # Hapus folder wallpaper
     if [ -d "$WALLPAPER_DIR" ]; then
         rm -rf "$WALLPAPER_DIR"
-        echo "✅ Folder wallpaper dihapus"
+        echo -e "${GREEN}✅ Folder wallpaper dihapus${NC}"
     fi
     
-    # Kembalikan core.blade.php ke default (kosong/inject ulang tanpa CSS)
+    # Kembalikan core.blade.php ke default
     cat > "$TARGET_FILE" << 'EOF'
 @extends('templates/wrapper', [
     'css' => ['body' => 'bg-neutral-800'],
@@ -32,48 +59,58 @@ uninstall_wallpaper() {
 @endsection
 EOF
     
+    # Kembalikan footer ke default
+    if [ -f "$FOOTER_FILE" ]; then
+        sed -i 's/Rendzz Official®/Pterodactyl®/g' "$FOOTER_FILE"
+        sed -i 's/© 2025 - 2026/© 2015 - 2026/g' "$FOOTER_FILE"
+    fi
+    
     # Clear cache
-    cd "$PTERO_DIR"
+    cd "$PTERO_DIR" 2>/dev/null
     php artisan view:clear
     php artisan cache:clear
     
-    echo "✅ Panel kembali normal (tanpa wallpaper)"
-    echo ""
+    echo -e "\n${GREEN}✅ Panel kembali normal 100%!${NC}"
+    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 }
 
-# Function: Install wallpaper baru
+# -------------------------------
+# FUNCTION: INSTALL WALLPAPER + GLASS
+# -------------------------------
 install_wallpaper() {
-    echo ""
-    echo "🖼️  Install wallpaper baru..."
+    show_header
     
-    # Input URL dari user
-    echo "📸 Masukkan URL wallpaper (direct link gambar):"
+    # Input URL
+    echo -e "${YELLOW}📸 Masukkan URL wallpaper (direct link gambar):${NC}"
+    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -n "➤ "
     read WALLPAPER_URL
     
     # Validasi URL
     if [ -z "$WALLPAPER_URL" ]; then
-        echo "❌ URL tidak boleh kosong!"
+        echo -e "\n${RED}❌ URL tidak boleh kosong!${NC}"
         return 1
     fi
     
     if [[ ! "$WALLPAPER_URL" =~ ^https?:// ]]; then
-        echo "❌ URL harus diawali http:// atau https://"
+        echo -e "\n${RED}❌ URL harus diawali http:// atau https://${NC}"
         return 1
     fi
     
-    echo "✅ URL diterima: $WALLPAPER_URL"
+    echo -e "\n${GREEN}✅ URL diterima${NC}"
+    echo -e "${BLUE}📎 $WALLPAPER_URL${NC}"
+    echo ""
     
-    # Backup dulu
+    # Backup
     cp "$TARGET_FILE" "$BACKUP_FILE" 2>/dev/null
     
     # Download wallpaper
-    echo "📥 Downloading wallpaper..."
+    echo -e "${YELLOW}📥 Downloading wallpaper...${NC}"
     mkdir -p "$WALLPAPER_DIR"
-    curl -L "$WALLPAPER_URL" -o "$WALLPAPER_FILE"
+    curl -L "$WALLPAPER_URL" -o "$WALLPAPER_FILE" --progress-bar
     
     if [ ! -f "$WALLPAPER_FILE" ]; then
-        echo "❌ Gagal download wallpaper!"
+        echo -e "\n${RED}❌ Gagal download wallpaper!${NC}"
         return 1
     fi
     
@@ -82,9 +119,13 @@ install_wallpaper() {
     chown -R nginx:nginx "$WALLPAPER_DIR" 2>/dev/null || \
     chown -R apache:apache "$WALLPAPER_DIR" 2>/dev/null
     
-    echo "✅ Wallpaper tersimpan"
+    echo -e "${GREEN}✅ Wallpaper tersimpan${NC}\n"
     
-    # Inject CSS wallpaper (MURNI BACKGROUND, TIDAK ADA GREETING/ACCESS CONTROL)
+    # -------------------------------
+    # INJECT CORE BLADE - GLASS EDITION
+    # -------------------------------
+    echo -e "${YELLOW}🎨 Menginjeksi efek glass premium...${NC}"
+    
     cat > "$TARGET_FILE" << 'EOF'
 @extends('templates/wrapper', [
     'css' => ['body' => 'bg-neutral-800'],
@@ -95,75 +136,294 @@ install_wallpaper() {
     <div id="app"></div>
 
     <style>
-        /* RENDZZ OFFICIAL - WALLPAPER ONLY */
+        /* ======================================= */
+        /*   RENDZZ GLASS EDITION V3 - PREMIUM    */
+        /* ======================================= */
+
+        /* BACKGROUND DENGAN EFEK BLUR */
         body {
             background: url('/rendzz/bg.jpg') no-repeat center center fixed !important;
             background-size: cover !important;
+            position: relative;
         }
-        
-        /* Biar konten tetap kebaca */
-        .content-wrapper, .main-sidebar, .card {
-            background-color: rgba(255, 255, 255, 0.9) !important;
-            backdrop-filter: blur(5px);
+
+        /* LAPISAN OVERLAY GRADIENT */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, 
+                rgba(0, 0, 0, 0.2) 0%, 
+                rgba(20, 30, 50, 0.5) 100%
+            );
+            backdrop-filter: blur(8px);
+            pointer-events: none;
+            z-index: 1;
         }
-        
-        .dark-mode .content-wrapper, 
-        .dark-mode .main-sidebar, 
+
+        /* WATERMARK PREMIUM */
+        body::before {
+            content: "RENDZZ OFFICIAL";
+            position: fixed;
+            bottom: 25px;
+            right: 35px;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 16px;
+            font-family: 'Poppins', 'Segoe UI', monospace;
+            font-weight: 700;
+            letter-spacing: 8px;
+            z-index: 9999;
+            text-transform: uppercase;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            opacity: 0.6;
+            transform: rotate(0deg);
+        }
+
+        /* SEMUA KONTEN DI ATAS OVERLAY */
+        #app, #modal-portal, .content-wrapper, .main-sidebar,
+        .card, .navbar, .footer, .modal-content, .dropdown-menu {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ========== GLASSMORPHISM SIDEBAR ========== */
+        .main-sidebar {
+            background: rgba(18, 22, 35, 0.65) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 8px 0 32px rgba(0, 0, 0, 0.2) !important;
+            transition: all 0.3s ease;
+        }
+
+        .main-sidebar:hover {
+            background: rgba(25, 30, 45, 0.75) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        /* ========== NAVBAR GLASS ========== */
+        .main-header {
+            background: rgba(25, 30, 40, 0.6) !important;
+            backdrop-filter: blur(14px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* ========== CARD GLASS ELEGAN ========== */
+        .card {
+            background: rgba(255, 255, 255, 0.75) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            background: rgba(255, 255, 255, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* ========== DARK MODE CARD ========== */
         .dark-mode .card {
-            background-color: rgba(31, 41, 55, 0.9) !important;
-            backdrop-filter: blur(5px);
+            background: rgba(20, 25, 35, 0.7) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .dark-mode .card:hover {
+            background: rgba(30, 35, 45, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        }
+
+        /* ========== DARK MODE SIDEBAR ========== */
+        .dark-mode .main-sidebar {
+            background: rgba(10, 12, 20, 0.75) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* ========== DARK MODE NAVBAR ========== */
+        .dark-mode .main-header {
+            background: rgba(15, 17, 25, 0.7) !important;
+            backdrop-filter: blur(14px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+        }
+
+        /* ========== BUTTON PREMIUM ========== */
+        .btn {
+            border-radius: 10px !important;
+            transition: all 0.2s ease !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.3px !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(145deg, #4776E6, #8E54E9) !important;
+            border: none !important;
+            box-shadow: 0 6px 20px rgba(71, 118, 230, 0.3) !important;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(71, 118, 230, 0.45) !important;
+        }
+
+        /* ========== MODAL GLASS ========== */
+        .modal-content {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 24px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .dark-mode .modal-content {
+            background: rgba(20, 25, 35, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* ========== DROPDOWN GLASS ========== */
+        .dropdown-menu {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .dark-mode .dropdown-menu {
+            background: rgba(25, 30, 40, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* ========== TABLE GLASS ========== */
+        .table {
+            background: rgba(255, 255, 255, 0.6) !important;
+            backdrop-filter: blur(8px) !important;
+            border-radius: 12px !important;
+        }
+
+        .dark-mode .table {
+            background: rgba(20, 25, 35, 0.6) !important;
+        }
+
+        /* ========== SCROLLBAR CUSTOM ========== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ========== ANIMASI HALUS ========== */
+        .card, .btn, .nav-item, .dropdown, .modal-content {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
     </style>
 @endsection
 EOF
+
+    # -------------------------------
+    # GANTI COPYRIGHT FOOTER
+    # -------------------------------
+    if [ -f "$FOOTER_FILE" ]; then
+        sed -i 's/Pterodactyl®/Rendzz Official®/g' "$FOOTER_FILE"
+        sed -i 's/© [0-9]\{4\} - [0-9]\{4\}/© 2025 - 2026/g' "$FOOTER_FILE"
+    fi
     
-    # Clear cache
-    cd "$PTERO_DIR"
+    # -------------------------------
+    # GANTI TITLE PANEL
+    # -------------------------------
+    sed -i 's/<title>.*<\/title>/<title>✨ Rendzz Glass Edition ✨<\/title>/g' "$PTERO_DIR/resources/views/layouts/admin.blade.php" 2>/dev/null
+    sed -i 's/<title>.*<\/title>/<title>✨ Rendzz Glass Edition ✨<\/title>/g' "$PTERO_DIR/resources/views/layouts/auth.blade.php" 2>/dev/null
+    
+    # -------------------------------
+    # CLEAR CACHE
+    # -------------------------------
+    cd "$PTERO_DIR" 2>/dev/null
     php artisan view:clear
     php artisan cache:clear
     
-    echo "✅ Wallpaper berhasil diinstall!"
-    echo "🖼️  URL: $WALLPAPER_URL"
-    echo ""
+    # -------------------------------
+    # SUCCESS MESSAGE
+    # -------------------------------
+    echo -e "\n${GREEN}╔════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║           ✅ INSTALLASI PREMIUM BERHASIL! ✅          ║${NC}"
+    echo -e "${GREEN}╚════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${CYAN}🖼️  Wallpaper  : ${NC}$WALLPAPER_URL"
+    echo -e "${PURPLE}🎨 Efek Glass  : Sidebar | Card | Navbar | Modal${NC}"
+    echo -e "${BLUE}💧 Watermark   : Rendzz Official${NC}"
+    echo -e "${YELLOW}©️  Footer      : Rendzz Official® 2025-2026${NC}"
+    echo -e "${GREEN}📌 Title       : ✨ Rendzz Glass Edition ✨${NC}"
+    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${GREEN}🚀 Refresh browser (CTRL+SHIFT+R) untuk lihat hasil!${NC}"
 }
 
 # -------------------------------
 # MAIN MENU
 # -------------------------------
 while true; do
-    clear
-    echo "╔════════════════════════════════════════════╗"
-    echo "║     🔥 RENDZZ WALLPAPER MANAGER 🔥       ║"
-    echo "╠════════════════════════════════════════════╣"
-    echo "║                                            ║"
-    echo "║  [1] 🗑️  HAPUS wallpaper                  ║"
-    echo "║  [2] 🖼️  INSTALL wallpaper baru           ║"
-    echo "║  [x] ❌ KELUAR                           ║"
-    echo "║                                            ║"
-    echo "╚════════════════════════════════════════════╝"
+    show_header
+    echo -e "${WHITE}╔════════════════════════════════════════════╗${NC}"
+    echo -e "${WHITE}║           🔥 PILIH MENU 🔥               ║${NC}"
+    echo -e "${WHITE}╠════════════════════════════════════════════╣${NC}"
+    echo -e "${WHITE}║                                          ║${NC}"
+    echo -e "${WHITE}║  ${RED}[1]${NC} 🗑️  HAPUS Wallpaper & Efek Glass   ${WHITE}║${NC}"
+    echo -e "${WHITE}║  ${GREEN}[2]${NC} ✨ INSTALL Wallpaper + Glass     ${WHITE}║${NC}"
+    echo -e "${WHITE}║  ${BLUE}[x]${NC} ❌ KELUAR                       ${WHITE}║${NC}"
+    echo -e "${WHITE}║                                          ║${NC}"
+    echo -e "${WHITE}╚════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -n "Pilih menu [1/2/x]: "
+    echo -ne "${YELLOW}➤ Pilih menu [1/2/x]: ${NC}"
     read MENU
     
     case $MENU in
         1)
             uninstall_wallpaper
             echo ""
-            echo -n "Tekan Enter untuk kembali ke menu..."
+            echo -ne "${CYAN}Tekan Enter untuk kembali ke menu...${NC}"
             read
             ;;
         2)
             install_wallpaper
             echo ""
-            echo -n "Tekan Enter untuk kembali ke menu..."
+            echo -ne "${CYAN}Tekan Enter untuk kembali ke menu...${NC}"
             read
             ;;
         x)
-            echo "Terima kasih! - Rendzz Official"
+            show_header
+            echo -e "${GREEN}✨ Terima kasih telah menggunakan Rendzz Glass Edition!${NC}"
+            echo -e "${CYAN}📱 Telegram: @lynnn046${NC}"
+            echo ""
             exit 0
             ;;
         *)
-            echo "Pilihan tidak valid!"
+            echo -e "${RED}Pilihan tidak valid!${NC}"
             sleep 1
             ;;
     esac
