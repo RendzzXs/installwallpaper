@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # -------------------------------
-# RENDZZ UNIQUE EDITION V2.0
-# "Bukan Kotak Biasa!"
+# RENDZZ UNIQUE EDITION - BUKAN KOTAK BIASA!
 # -------------------------------
-
 PTERO_DIR="/var/www/pterodactyl"
 TARGET_FILE="$PTERO_DIR/resources/views/templates/base/core.blade.php"
 FOOTER_FILE="$PTERO_DIR/resources/views/templates/base/footer.blade.php"
@@ -14,7 +12,7 @@ BACKUP_FILE="$PTERO_DIR/core.backup"
 WALLPAPER_DIR="$PTERO_DIR/public/rendzz"
 WALLPAPER_FILE="$WALLPAPER_DIR/bg.jpg"
 
-# Warna Premium
+# Warna
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -22,126 +20,19 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[1;37m'
-BLACK='\033[0;30m'
-ORANGE='\033[0;33m'
-BOLD='\033[1m'
-DIM='\033[2m'
-BLINK='\033[5m'
-REVERSE='\033[7m'
 NC='\033[0m'
 
-# Ikon
-CHECK_MARK="\xE2\x9C\x85"
-CROSS_MARK="\xE2\x9D\x8C"
-ROCKET="\xF0\x9F\x9A\x80"
-FIRE="\xF0\x9F\x94\xA5"
-STAR="\xE2\xAD\x90"
-DIAMOND="\xF0\x9F\x92\x8E"
-LOCK="\xF0\x9F\x94\x92"
-KEY="\xF0\x9F\x94\x91"
-GLOBE="\xF0\x9F\x8C\x8D"
-SPARKLES="\xE2\x9C\xA8"
-WARNING="\xE2\x9A\xA0\xEF\xB8\x8F"
-GEAR="\xE2\x9A\x99\xEF\xB8\x8F"
-HEART="\xE2\x9D\xA4\xEF\xB8\x8F"
-
 # -------------------------------
-# FUNCTION: ANIMASI LOADING KEREN
-# -------------------------------
-show_loading() {
-    local message=$1
-    local pid=$2
-    local spin=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
-    local colors=($RED $ORANGE $YELLOW $GREEN $CYAN $BLUE $PURPLE)
-    
-    echo -ne "\n"
-    while kill -0 $pid 2>/dev/null; do
-        for i in "${spin[@]}"; do
-            for color in "${colors[@]}"; do
-                echo -ne "\r${color}${i}${NC} ${message}   "
-                sleep 0.05
-            done
-        done
-    done
-    echo -ne "\r${GREEN}${CHECK_MARK}${NC} ${message} - ${GREEN}Done!${NC}  \n"
-}
-
-# -------------------------------
-# FUNCTION: PROGRESS BAR
-# -------------------------------
-show_progress() {
-    local duration=$1
-    local message=$2
-    local width=50
-    local bar_char="█"
-    local empty_char="░"
-    
-    echo -e "\n${CYAN}${GEAR} ${message}${NC}"
-    echo -ne "${WHITE}[${NC}"
-    
-    for ((i=0; i<width; i++)); do
-        echo -ne "${DIM}${empty_char}${NC}"
-    done
-    echo -ne "${WHITE}]${NC} 0%"
-    echo -ne "\r${WHITE}[${NC}"
-    
-    for ((i=0; i<=width; i++)); do
-        local percent=$((i * 100 / width))
-        local color=$GREEN
-        if [ $percent -lt 30 ]; then
-            color=$RED
-        elif [ $percent -lt 60 ]; then
-            color=$YELLOW
-        else
-            color=$GREEN
-        fi
-        
-        echo -ne "\r${WHITE}[${NC}"
-        for ((j=0; j<i; j++)); do
-            echo -ne "${color}${bar_char}${NC}"
-        done
-        for ((j=i; j<width; j++)); do
-            echo -ne "${DIM}${empty_char}${NC}"
-        done
-        echo -ne "${WHITE}]${NC} ${color}${percent}%${NC}"
-        sleep 0.02
-    done
-    echo -e "\n"
-}
-
-# -------------------------------
-# FUNCTION: HEADER PREMIUM
+# FUNCTION: HEADER
 # -------------------------------
 show_header() {
     clear
-    echo -e "${RED}╔══════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${RED}║${WHITE}                                                                      ${RED}║${NC}"
-    echo -e "${RED}║${WHITE}                      ${FIRE} RENDZZ UNIQUE EDITION ${FIRE}                       ${RED}║${NC}"
-    echo -e "${RED}║${WHITE}                      ${CYAN}Version 2.0 - Premium                      ${RED}║${NC}"
-    echo -e "${RED}║${WHITE}                      ${PURPLE}GA SUBREK GA KEREN!                        ${RED}║${NC}"
-    echo -e "${RED}║${WHITE}                                                                      ${RED}║${NC}"
-    echo -e "${RED}╚══════════════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${YELLOW}   📢 Subscribe: ${RED}Rendzz Official${NC} ${WHITE}|${NC} ${BLUE}📱 Telegram: @lynnn046${NC}"
-    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo ""
-}
-
-# -------------------------------
-# FUNCTION: SHOW THANKS
-# -------------------------------
-show_thanks() {
-    echo -e "\n${WHITE}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║${RED}                         ${HEART} SPECIAL THANKS ${HEART}                          ${WHITE}║${NC}"
-    echo -e "${WHITE}╠══════════════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${WHITE}║${GREEN}                                                                      ${WHITE}║${NC}"
-    echo -e "${WHITE}║${YELLOW}   ✦ 1. ${WHITE}ALLAH SWT - Segala puji bagi-Nya                        ${WHITE}║${NC}"
-    echo -e "${WHITE}║${YELLOW}   ✦ 2. ${WHITE}RENDZZ (Developer) - Sang pencipta                       ${WHITE}║${NC}"
-    echo -e "${WHITE}║${YELLOW}   ✦ 3. ${WHITE}Kedua Orang Tua tercinta                                ${WHITE}║${NC}"
-    echo -e "${WHITE}║${YELLOW}   ✦ 4. ${WHITE}AULIA - My Love ❤️                                     ${WHITE}║${NC}"
-    echo -e "${WHITE}║${GREEN}                                                                      ${WHITE}║${NC}"
-    echo -e "${WHITE}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${CYAN}╔════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                                                        ║${NC}"
+    echo -e "${CYAN}║${WHITE}          🔥 RENDZZ UNIQUE  🔥              ${CYAN}║${NC}"
+    echo -e "${CYAN}║${WHITE}                      !                  ${CYAN}║${NC}"
+    echo -e "${CYAN}║                                                        ║${NC}"
+    echo -e "${CYAN}╚════════════════════════════════════════════════════════╝${NC}"
     echo ""
 }
 
@@ -150,14 +41,12 @@ show_thanks() {
 # -------------------------------
 uninstall_wallpaper() {
     show_header
-    echo -e "${RED}${WARNING}  RESET PANEL - KEMBALI KE DEFAULT ${WARNING}${NC}\n"
-    
-    show_progress 3 "Preparing to reset panel..."
+    echo -e "${YELLOW}🗑️  Menghapus custom design...${NC}\n"
     
     # Hapus folder wallpaper
     if [ -d "$WALLPAPER_DIR" ]; then
         rm -rf "$WALLPAPER_DIR"
-        echo -e "${GREEN}${CHECK_MARK} Folder wallpaper dihapus${NC}"
+        echo -e "${GREEN}✅ Folder wallpaper dihapus${NC}"
     fi
     
     # Kembalikan core.blade.php ke default
@@ -171,26 +60,19 @@ uninstall_wallpaper() {
     <div id="app"></div>
 @endsection
 EOF
-    echo -e "${GREEN}${CHECK_MARK} Core file dikembalikan${NC}"
     
     # Kembalikan footer ke default
     if [ -f "$FOOTER_FILE" ]; then
         sed -i 's/Rendzz Official®/Pterodactyl®/g' "$FOOTER_FILE"
         sed -i 's/© 2025 - 2026/© 2015 - 2026/g' "$FOOTER_FILE"
-        echo -e "${GREEN}${CHECK_MARK} Footer dikembalikan${NC}"
     fi
     
     # Clear cache
     cd "$PTERO_DIR" 2>/dev/null
+    php artisan view:clear
+    php artisan cache:clear
     
-    echo -e "\n${YELLOW}${GEAR} Clearing cache...${NC}"
-    php artisan view:clear > /dev/null 2>&1
-    php artisan cache:clear > /dev/null 2>&1
-    
-    echo -e "\n${GREEN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║                      ${WHITE}${CHECK_MARK} RESET BERHASIL ${CHECK_MARK}                      ${GREEN}║${NC}"
-    echo -e "${GREEN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
-    echo -e "${WHITE}Panel kembali ke tampilan default!${NC}"
+    echo -e "\n${GREEN}✅ Panel kembali normal!${NC}"
 }
 
 # -------------------------------
@@ -198,45 +80,28 @@ EOF
 # -------------------------------
 install_wallpaper() {
     show_header
-    show_thanks
     
-    # Input URL dengan style
-    echo -e "${WHITE}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║${YELLOW}                         ${GLOBE} INPUT WALLPAPER ${GLOBE}                         ${WHITE}║${NC}"
-    echo -e "${WHITE}╚══════════════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-    echo -e "${WHITE}Masukkan URL gambar untuk wallpaper:${NC}"
-    echo -e "${DIM}Contoh: https://example.com/image.jpg${NC}"
-    echo -ne "${GREEN}➤ ${NC}"
+    # Input URL
+    echo -e "${YELLOW}📸 Masukkan URL wallpaper:${NC}"
+    echo -n "➤ "
     read WALLPAPER_URL
     
     # Validasi URL
     if [ -z "$WALLPAPER_URL" ]; then
-        echo -e "\n${RED}${CROSS_MARK} URL tidak boleh kosong!${NC}"
-        sleep 2
+        echo -e "\n${RED}❌ URL tidak boleh kosong!${NC}"
         return 1
     fi
     
-    echo ""
-    
-    # Backup dengan animasi
-    echo -e "${YELLOW}${GEAR} Membuat backup...${NC}"
+    # Backup
     cp "$TARGET_FILE" "$BACKUP_FILE" 2>/dev/null
-    sleep 0.5
-    echo -e "${GREEN}${CHECK_MARK} Backup created: core.backup${NC}\n"
     
-    # Download wallpaper dengan progress bar
-    echo -e "${YELLOW}${GLOBE} Mendownload wallpaper...${NC}"
+    # Download wallpaper
+    echo -e "\n${YELLOW}📥 Downloading wallpaper...${NC}"
     mkdir -p "$WALLPAPER_DIR"
-    
-    # Simulasi download dengan progress
-    (
-        curl -L "$WALLPAPER_URL" -o "$WALLPAPER_FILE" --progress-bar > /dev/null 2>&1
-    ) &
-    show_loading "Downloading wallpaper" $!
+    curl -L "$WALLPAPER_URL" -o "$WALLPAPER_FILE" --progress-bar
     
     if [ ! -f "$WALLPAPER_FILE" ]; then
-        echo -e "\n${RED}${CROSS_MARK} Gagal download wallpaper!${NC}"
+        echo -e "\n${RED}❌ Gagal download wallpaper!${NC}"
         return 1
     fi
     
@@ -244,29 +109,28 @@ install_wallpaper() {
     chown -R www-data:www-data "$WALLPAPER_DIR" 2>/dev/null || \
     chown -R nginx:nginx "$WALLPAPER_DIR" 2>/dev/null
     
-    echo -e "${GREEN}${CHECK_MARK} Wallpaper tersimpan di: ${WALLPAPER_FILE}${NC}\n"
+    echo -e "${GREEN}✅ Wallpaper tersimpan${NC}\n"
     
     # -------------------------------
-    # GANTI COPYRIGHT FOOTER
+    # GANTI COPYRIGHT FOOTER - FIX BANGET!
     # -------------------------------
-    echo -e "${YELLOW}${KEY} Mengganti copyright footer...${NC}"
+    echo -e "${YELLOW}©️  Mengganti copyright footer...${NC}"
     
+    # Backup dulu
     cp "$FOOTER_FILE" "$FOOTER_FILE.bak" 2>/dev/null
     
+    # GANTI LANGSUNG DENGAN SED - PASTI BERUBAH!
     sed -i 's/Pterodactyl®/Rendzz Official®/g' "$FOOTER_FILE"
     sed -i 's/Pterodactyl/Rendzz Official/g' "$FOOTER_FILE"
     sed -i 's/© 2015 - 2026/© 2025 - 2026/g' "$FOOTER_FILE"
     sed -i 's/© [0-9]\{4\} - [0-9]\{4\}/© 2025 - 2026/g' "$FOOTER_FILE"
     
-    echo -e "${GREEN}${CHECK_MARK} Footer: Rendzz Official® © 2025 - 2026${NC}\n"
+    echo -e "${GREEN}✅ Footer: Rendzz Official® © 2025 - 2026${NC}\n"
     
     # -------------------------------
     # INJECT CORE BLADE - UNIQUE DESIGN
     # -------------------------------
-    echo -e "${YELLOW}${SPARKLES} Menginjeksi unique design...${NC}"
-    
-    # Simulasi proses inject
-    show_progress 2 "Injecting custom CSS"
+    echo -e "${YELLOW}🎨 Menginjeksi unique design...${NC}"
     
     cat > "$TARGET_FILE" << 'EOF'
 @extends('templates/wrapper', [
@@ -279,49 +143,17 @@ install_wallpaper() {
 
     <style>
         /* ======================================= */
-        /*   RENDZZ UNIQUE EDITION V2.0           */
-        /*   Premium Design - Bukan Kotak Biasa!  */
-        /*   Copyright © 2025 Rendzz Official     */
+        /*   RENDZZ UNIQUE EDITION                */
+        /*   Bukan Kotak Biasa!                  */
         /* ======================================= */
 
-        /* ANIMASI LOADING UNTUK PAGE */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes glowPulse {
-            0% { box-shadow: 0 0 5px rgba(255,255,255,0.2); }
-            50% { box-shadow: 0 0 20px rgba(78, 205, 196, 0.6); }
-            100% { box-shadow: 0 0 5px rgba(255,255,255,0.2); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes rotateGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* BACKGROUND DENGAN OVERLAY GRADIENT */
+        /* BACKGROUND */
         body {
             background: url('/rendzz/bg.jpg') no-repeat center center fixed !important;
             background-size: cover !important;
-            position: relative;
         }
 
-        /* OVERLAY GRADIENT DINAMIS */
+        /* OVERLAY TIPIS - NO BLUR BERLEBIHAN */
         body::after {
             content: "";
             position: fixed;
@@ -329,289 +161,177 @@ install_wallpaper() {
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, 
-                rgba(0, 0, 0, 0.3) 0%, 
-                rgba(78, 205, 196, 0.15) 50%,
-                rgba(0, 0, 0, 0.3) 100%);
-            background-size: 200% 200%;
-            animation: rotateGradient 10s ease infinite;
+            background: rgba(0, 0, 0, 0.2);
             pointer-events: none;
             z-index: 1;
         }
 
-        #app, .content-wrapper, .main-sidebar, .main-header {
+        #app, .content-wrapper {
             position: relative;
             z-index: 2;
-            animation: fadeInUp 0.8s ease-out;
         }
 
         /* ======================================= */
-        /*   SERVER CARD - HEXAGON PREMIUM        */
+        /*   SERVER CARD - BUKAN KOTAK BIASA!     */
         /* ======================================= */
         
+        /* ANIMASI MASUK DARI KIRI */
+        @keyframes slideInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* CARD SERVER - BENTUK HEXAGON! */
         .card {
-            background: rgba(255, 255, 255, 0.92) !important;
-            backdrop-filter: blur(10px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
-            border-radius: 25px 8px 25px 8px !important;
-            box-shadow: 
-                0 15px 35px rgba(0, 0, 0, 0.2),
-                inset 0 0 30px rgba(255, 255, 255, 0.2) !important;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-            animation: float 3s ease-in-out infinite !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: none !important;
+            border-radius: 20px 8px 20px 8px !important;  /* UNIK! Bukan kotak biasa */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+            transition: all 0.3s ease !important;
+            animation: slideInLeft 0.6s ease-out !important;
             position: relative;
             overflow: hidden;
         }
 
-        /* GARIS GRADIENT BERGERAK */
+        /* GARIS DEKORATIF */
         .card::before {
             content: "";
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, 
-                #ff6b6b, #4ecdc4, #556270, #ff6b6b);
-            background-size: 300% 300%;
-            animation: rotateGradient 5s ease infinite;
-            border-radius: 25px 8px 25px 8px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #ff6b6b, #4ecdc4);
+            border-radius: 20px 0 0 8px;
         }
 
-        .card:hover::before {
-            opacity: 1;
-        }
-
+        /* HOVER EFEK - NAIK & BAYANGAN */
         .card:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 30px 45px rgba(0, 0, 0, 0.3) !important;
-            background: rgba(255, 255, 255, 0.98) !important;
-            animation: glowPulse 2s infinite !important;
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
+            background: white !important;
         }
 
-        /* CORNER DEKORASI */
-        .card::after {
-            content: "";
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 20px;
-            height: 20px;
-            border-top: 3px solid #4ecdc4;
-            border-right: 3px solid #4ecdc4;
-            border-radius: 0 8px 0 0;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card:hover::after {
-            opacity: 1;
-        }
-
+        /* CARD BODY */
         .card-body {
-            padding: 1.8rem !important;
+            padding: 1.5rem !important;
         }
 
+        /* TITLE SERVER */
         .card-title {
-            font-weight: 800 !important;
-            color: #1a2634 !important;
-            border-bottom: 2px solid transparent;
-            border-image: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-            border-image-slice: 1;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            letter-spacing: -0.5px;
+            font-weight: 700 !important;
+            color: #2d3748 !important;
+            border-bottom: 2px dashed #4ecdc4;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         /* ======================================= */
-        /*   SIDEBAR - GLASS MORPHISM             */
+        /*   SIDEBAR - MODERN                        */
         /* ======================================= */
         .main-sidebar {
-            background: rgba(26, 32, 44, 0.75) !important;
-            backdrop-filter: blur(15px) !important;
-            border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3) !important;
+            background: rgba(26, 32, 44, 0.85) !important;
+            border-right: none !important;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2) !important;
         }
 
         .nav-link {
-            border-radius: 15px !important;
-            margin: 8px 20px !important;
-            padding: 12px 15px !important;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-link::before {
-            content: "";
-            position: absolute;
-            left: -100%;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .nav-link:hover::before {
-            left: 100%;
+            border-radius: 12px !important;
+            margin: 5px 15px !important;
+            transition: all 0.2s ease;
         }
 
         .nav-link:hover {
-            background: rgba(78, 205, 196, 0.2) !important;
-            transform: translateX(8px);
-            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+            background: rgba(255, 255, 255, 0.1) !important;
+            transform: translateX(5px);
         }
 
         /* ======================================= */
-        /*   NAVBAR - CLEAN GLASS                 */
+        /*   NAVBAR - CLEAN                          */
         /* ======================================= */
         .main-header {
-            background: rgba(255, 255, 255, 0.75) !important;
-            backdrop-filter: blur(15px) !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+            background: rgba(255, 255, 255, 0.85) !important;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1) !important;
+            border-bottom: none !important;
         }
 
         .dark-mode .main-header {
-            background: rgba(26, 32, 44, 0.75) !important;
+            background: rgba(26, 32, 44, 0.85) !important;
         }
 
         /* ======================================= */
-        /*   BUTTON - 3D EFFECT                   */
+        /*   BUTTON - CIRCLE                        */
         /* ======================================= */
         .btn {
-            border-radius: 50px !important;
-            padding: 10px 25px !important;
-            font-weight: 700 !important;
-            letter-spacing: 0.5px !important;
-            transition: all 0.3s ease !important;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::after {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
-            transform: rotate(30deg);
-            transition: transform 0.5s ease;
-        }
-
-        .btn:hover::after {
-            transform: rotate(30deg) translate(50%, 50%);
+            border-radius: 50px !important;  /* BULAT! */
+            padding: 8px 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.2s ease !important;
         }
 
         .btn-primary {
-            background: linear-gradient(145deg, #4ecdc4, #2c7a7b) !important;
+            background: linear-gradient(145deg, #4ecdc4, #556270) !important;
             border: none !important;
-            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4) !important;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3) !important;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 12px 30px rgba(78, 205, 196, 0.6) !important;
-        }
-
-        .btn-primary:active {
-            transform: translateY(2px) scale(0.98);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4) !important;
         }
 
         /* ======================================= */
-        /*   MODAL - PREMIUM DESIGN               */
+        /*   MODAL - UNIK                          */
         /* ======================================= */
         .modal-content {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(20px) !important;
-            border-radius: 40px 10px 40px 10px !important;
-            border: 1px solid rgba(255, 255, 255, 0.5) !important;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
+            border-radius: 30px 10px 30px 10px !important;  /* UNIK! */
+            border: none !important;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3) !important;
         }
 
         .modal-header {
-            border-bottom: 2px solid linear-gradient(90deg, #ff6b6b, #4ecdc4) !important;
-            border-radius: 40px 10px 0 0 !important;
-            background: linear-gradient(90deg, rgba(255,107,107,0.1), rgba(78,205,196,0.1));
-        }
-
-        .modal-footer {
-            border-top: none !important;
+            border-bottom: 2px dashed #4ecdc4 !important;
+            border-radius: 30px 10px 0 0 !important;
         }
 
         /* ======================================= */
-        /*   DARK MODE ENHANCED                   */
+        /*   DARK MODE                             */
         /* ======================================= */
         .dark-mode .card {
             background: rgba(26, 32, 44, 0.85) !important;
-            backdrop-filter: blur(10px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
         }
 
         .dark-mode .card-title {
-            color: #fff !important;
+            color: white !important;
+            border-bottom: 2px dashed #4ecdc4;
         }
 
-        .dark-mode .modal-content {
-            background: rgba(26, 32, 44, 0.95) !important;
+        .dark-mode .main-header {
+            background: rgba(26, 32, 44, 0.85) !important;
         }
 
         /* ======================================= */
-        /*   WATERMARK PREMIUM                     */
+        /*   WATERMARK MINIMAL                       */
         /* ======================================= */
         body::before {
-            content: "RENDZZ UNIQUE EDITION";
+            content: "RENDZZ";
             position: fixed;
-            bottom: 20px;
-            right: 30px;
-            color: rgba(255, 255, 255, 0.15);
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 5px;
-            z-index: 9999;
+            bottom: 15px;
+            right: 25px;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 10px;
+            z-index: 999;
             pointer-events: none;
-            text-shadow: 
-                0 0 20px rgba(78, 205, 196, 0.5),
-                0 0 40px rgba(255, 107, 107, 0.3);
-            transform: rotate(-5deg);
-            animation: float 4s ease-in-out infinite;
-            white-space: nowrap;
-        }
-
-        /* SCROLLBAR PREMIUM */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #ff5252, #45b7aa);
-        }
-
-        /* SELECTION COLOR */
-        ::selection {
-            background: #4ecdc4;
-            color: #fff;
+            text-shadow: 0 0 15px rgba(0,0,0,0.3);
         }
     </style>
 @endsection
@@ -620,129 +340,73 @@ EOF
     # -------------------------------
     # GANTI TITLE PANEL
     # -------------------------------
-    sed -i 's/<title>.*<\/title>/<title>🔥 Rendzz Unique Edition Premium 🔥<\/title>/g' "$PTERO_DIR/resources/views/layouts/admin.blade.php" 2>/dev/null
-    sed -i 's/<title>.*<\/title>/<title>🔥 Rendzz Unique Edition Premium 🔥<\/title>/g' "$PTERO_DIR/resources/views/layouts/auth.blade.php" 2>/dev/null
+    sed -i 's/<title>.*<\/title>/<title>🔥 Rendzz Unique Edition 🔥<\/title>/g' "$PTERO_DIR/resources/views/layouts/admin.blade.php" 2>/dev/null
+    sed -i 's/<title>.*<\/title>/<title>🔥 Rendzz Unique Edition 🔥<\/title>/g' "$PTERO_DIR/resources/views/layouts/auth.blade.php" 2>/dev/null
     
     # -------------------------------
     # CLEAR CACHE
     # -------------------------------
     cd "$PTERO_DIR" 2>/dev/null
-    
-    echo -e "\n${YELLOW}${GEAR} Membersihkan cache...${NC}"
-    php artisan view:clear > /dev/null 2>&1 &
-    show_loading "Clearing view cache" $!
-    
-    php artisan cache:clear > /dev/null 2>&1 &
-    show_loading "Clearing application cache" $!
-    
-    php artisan config:clear > /dev/null 2>&1 &
-    show_loading "Clearing config cache" $!
+    php artisan view:clear
+    php artisan cache:clear
+    php artisan config:clear
     
     # -------------------------------
-    # SUCCESS MESSAGE PREMIUM
+    # SUCCESS MESSAGE
     # -------------------------------
-    echo -e "\n${GREEN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║${WHITE}              ${SPARKLES} INSTALLASI PREMIUM BERHASIL ${SPARKLES}               ${GREEN}║${NC}"
-    echo -e "${GREEN}╠══════════════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${GREEN}║                                                                        ║${NC}"
-    echo -e "${GREEN}║  ${CYAN}🖼️  Wallpaper    :${WHITE} Custom URL                                     ${GREEN}║${NC}"
-    echo -e "${GREEN}║  ${PURPLE}🃏 Card Style    :${WHITE} Hexagon Premium + Glass Morphism               ${GREEN}║${NC}"
-    echo -e "${GREEN}║  ${BLUE}🎬 Animasi       :${WHITE} Fade In Up, Float, Glow Pulse                   ${GREEN}║${NC}"
-    echo -e "${GREEN}║  ${YELLOW}⚪ Button        :${WHITE} 3D Effect + Gradient                            ${GREEN}║${NC}"
-    echo -e "${GREEN}║  ${RED}💧 Sidebar       :${WHITE} Glass Morphism (Blur 15px)                       ${GREEN}║${NC}"
-    echo -e "${GREEN}║  ${ORANGE}©️  Footer        :${WHITE} Rendzz Official® © 2025-2026                   ${GREEN}║${NC}"
-    echo -e "${GREEN}║  ${PURPLE}💧 Watermark     :${WHITE} RENDZZ UNIQUE EDITION (Floating)               ${GREEN}║${NC}"
-    echo -e "${GREEN}║                                                                        ║${NC}"
-    echo -e "${GREEN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${GREEN}🚀 ${WHITE}Refresh browser dengan ${YELLOW}CTRL+SHIFT+R${WHITE} untuk melihat perubahan!${NC}"
-    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo ""
-    echo -e "${HEART} ${RED}Terima kasih telah menggunakan Rendzz Unique Edition!${NC} ${HEART}"
+    echo -e "\n${GREEN}╔════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║           ✅ INSTALLASI UNIQUE BERHASIL! ✅          ║${NC}"
+    echo -e "${GREEN}╚════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${CYAN}🖼️  Wallpaper   : ${NC}CUSTOM"
+    echo -e "${PURPLE}🃏 Server Card  : ${NC}Hexagon style (20px 8px 20px 8px)"
+    echo -e "${BLUE}🎬 Animasi      : ${NC}Slide In Left + Hover naik"
+    echo -e "${YELLOW}⚪ Button       : ${NC}Bulat (50px radius)"
+    echo -e "${GREEN}©️  Footer       : ${NC}Rendzz Official® © 2025-2026"
+    echo -e "${WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${GREEN}🚀 Refresh browser (CTRL+SHIFT+R)!${NC}"
 }
 
 # -------------------------------
-# FUNCTION: SHOW CREDITS
-# -------------------------------
-show_credits() {
-    echo -e "\n${CYAN}══════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${WHITE}                      CREDITS & THANKS TO                         ${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${WHITE}                                                                    ${NC}"
-    echo -e "${RED}          ❤️ 1. ALLAH SWT - Atas segala rahmat-Nya ❤️              ${NC}"
-    echo -e "${GREEN}          ✨ 2. RENDZZ (Developer) - Kreator script ini ✨         ${NC}"
-    echo -e "${YELLOW}          👨‍👩‍👧 3. Kedua Orang Tua - Doa dan dukungan              ${NC}"
-    echo -e "${PURPLE}          💕 4. AULIA - Cewekku tersayang 💕                     ${NC}"
-    echo -e "${WHITE}                                                                    ${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${BLUE}                      🔥 RENDZZ UNIQUE EDITION 🔥                   ${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-    sleep 3
-}
-
-# -------------------------------
-# MAIN MENU PREMIUM
+# MAIN MENU
 # -------------------------------
 while true; do
     show_header
-    
-    # Tampilkan credits sekali di awal
-    if [[ ! -f "/tmp/rendzz_credits_shown" ]]; then
-        show_credits
-        touch "/tmp/rendzz_credits_shown"
-    fi
-    
-    echo -e "${WHITE}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${WHITE}║                         ${YELLOW}📋 MENU UTAMA 📋                         ${WHITE}║${NC}"
-    echo -e "${WHITE}╠══════════════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${WHITE}║                                                                        ║${NC}"
-    echo -e "${WHITE}║  ${RED}[1]${NC} 🗑️  ${WHITE}HAPUS DESIGN     ${DIM}- Kembalikan ke default                   ${WHITE}║${NC}"
-    echo -e "${WHITE}║  ${GREEN}[2]${NC} ✨ ${WHITE}INSTALL DESIGN   ${DIM}- Pasang Unique Edition Premium         ${WHITE}║${NC}"
-    echo -e "${WHITE}║  ${BLUE}[3]${NC} 📢 ${WHITE}SHOW CREDITS    ${DIM}- Tampilkan ucapan terima kasih         ${WHITE}║${NC}"
-    echo -e "${WHITE}║  ${PURPLE}[x]${NC} ❌ ${WHITE}KELUAR          ${DIM}- Exit dari script                     ${WHITE}║${NC}"
-    echo -e "${WHITE}║                                                                        ║${NC}"
-    echo -e "${WHITE}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${WHITE}╔════════════════════════════════════════════╗${NC}"
+    echo -e "${WHITE}║           🔥 PILIH MENU 🔥               ║${NC}"
+    echo -e "${WHITE}╠════════════════════════════════════════════╣${NC}"
+    echo -e "${WHITE}║                                          ║${NC}"
+    echo -e "${WHITE}║  ${RED}[1]${NC} 🗑️  HAPUS - Balik Normal         ${WHITE}║${NC}"
+    echo -e "${WHITE}║  ${GREEN}[2]${NC} ✨ INSTALL - Unique Edition     ${WHITE}║${NC}"
+    echo -e "${WHITE}║  ${BLUE}[x]${NC} ❌ KELUAR                       ${WHITE}║${NC}"
+    echo -e "${WHITE}║                                          ║${NC}"
+    echo -e "${WHITE}╚════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -ne "${YELLOW}➤ Pilih menu [1/2/3/x]${NC}: ${GREEN}"
+    echo -ne "${YELLOW}➤ Pilih menu [1/2/x]: ${NC}"
     read MENU
-    echo -e "${NC}"
     
     case $MENU in
         1)
             uninstall_wallpaper
             echo ""
-            echo -ne "${CYAN}Tekan Enter untuk kembali ke menu...${NC}"
+            echo -ne "${CYAN}Tekan Enter untuk kembali...${NC}"
             read
             ;;
         2)
             install_wallpaper
             echo ""
-            echo -ne "${CYAN}Tekan Enter untuk kembali ke menu...${NC}"
+            echo -ne "${CYAN}Tekan Enter untuk kembali...${NC}"
             read
             ;;
-        3)
-            show_credits
-            echo -ne "${CYAN}Tekan Enter untuk kembali ke menu...${NC}"
-            read
-            ;;
-        x|X)
-            echo -e "\n${GREEN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
-            echo -e "${GREEN}║${WHITE}              ✨ Terima kasih telah menggunakan script ini ✨              ${GREEN}║${NC}"
-            echo -e "${GREEN}║${WHITE}                      ${RED}❤️ RENDZZ UNIQUE EDITION ❤️                      ${GREEN}║${NC}"
-            echo -e "${GREEN}║${WHITE}                 ${BLUE}📱 Telegram: @lynnn046 | Subscribe!                 ${GREEN}║${NC}"
-            echo -e "${GREEN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
-            echo -e "\n${PURPLE}Jangan lupa subscribe channel Rendzz Official!${NC}"
-            echo -e "${YELLOW}Sampai jumpa lagi! 👋${NC}\n"
-            
-            # Hapus temporary file
-            rm -f "/tmp/rendzz_credits_shown"
+        x)
+            echo -e "\n${GREEN}✨ Thanks for using Rendzz Unique Edition!${NC}"
+            echo -e "${CYAN}📱 Telegram: @lynnn046${NC}\n"
             exit 0
             ;;
         *)
-            echo -e "${RED}${CROSS_MARK} Pilihan tidak valid!${NC}"
+            echo -e "${RED}Pilihan tidak valid!${NC}"
             sleep 1
             ;;
     esac
 done
+
